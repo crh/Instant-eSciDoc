@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<AutomatedInstallation langpack="deu">
+  <com.izforge.izpack.panels.HTMLHelloPanel id="UNKNOWN (com.izforge.izpack.panels.HTMLHelloPanel)"/>
+  <com.izforge.izpack.panels.HTMLLicencePanel id="HTMLLicencePanel.licence"/>
+  <com.izforge.izpack.panels.HTMLInfoPanel id="info"/>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.0">
+    <userInput>
+      <entry key="InstallationType" value="install"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.1">
+    <userInput>
+      <entry key="EscidocHost" value="<%= node[:escidoc][:hostname] %>"/>
+      <entry key="EscidocPort" value="<%= node[:jboss][:port] %>"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.2">
+    <userInput>
+      <entry key="Database" value="PostgreSQL"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.3">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.4">
+    <userInput>
+      <entry key="DatabaseDriverClassPostgres" value="org.postgresql.Driver"/>
+      <entry key="DatabaseHost" value="localhost"/>
+      <entry key="RootDatabaseName" value="postgres"/>
+      <entry key="DatabasePortPostgres" value="5432"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.5">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.6">
+    <userInput>
+      <entry key="DatabaseAdminPassword" value="<%= node[:postgresql][:password][:postgres] %>"/>
+      <entry key="DatabaseAdminUsernamePostgres" value="postgres"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.7">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.8">
+    <userInput>
+      <entry key="DatabasePassword" value="<%= node[:escidoc][:users][:databaseUser][:password] %>"/>
+      <entry key="DatabaseUsername" value="<%= node[:escidoc][:users][:databaseUser][:username] %>"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.9">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.10">
+    <userInput>
+      <entry key="FedoraPassword" value="<%= node[:fedora][:password] %>"/>
+      <entry key="FedoraUsername" value="<%= node[:fedora][:username] %>"/>
+      <entry key="FedoraAdminMailAddress" value="<%= node[:fedora][:email] %>"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.11">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.12">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.13">
+    <userInput>
+      <entry key="JdkUseJavaHome" value="true"/>
+      <entry key="JdkHome" value=""/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.TargetPanel id="EscidocTarget">
+    <installpath><%= node[:escidoc][:installpath] %></installpath>
+  </com.izforge.izpack.panels.TargetPanel>
+  <com.izforge.izpack.panels.TreePacksPanel id="EscidocPacks">
+    <pack index="0" name="eSciDoc" selected="<%= node[:escidoc][:feature][:escidoc] %>"/>
+    <pack index="1" name="Install Scripts" selected="<%= node[:escidoc][:feature][:installscripts] %>"/>
+    <pack index="2" name="JBoss Application Server" selected="<%= node[:escidoc][:feature][:jboss] %>"/>
+    <pack index="3" name="Fedora Repository" selected="<%= node[:escidoc][:feature][:fedora] %>"/>
+    <pack index="4" name="eSciDoc Infrastructure" selected="<%= node[:escidoc][:feature][:infrastructure] %>"/>
+    <pack index="5" name="Additional Services and Tools" selected="<%= node[:escidoc][:feature][:additionaltools] %>"/>
+    <pack index="6" name="Admin Tool" selected="<%= node[:escidoc][:feature][:admintool] %>"/>
+    <pack index="7" name="Migration Tool" selected="<%= node[:escidoc][:feature][:migrationtool] %>"/>
+    <pack index="8" name="Fedora GSearch" selected="<%= node[:escidoc][:feature][:fedoragsearch] %>"/>
+    <pack index="9" name="SRW" selected="<%= node[:escidoc][:feature][:srw] %>"/>
+    <pack index="10" name="Saxon" selected="<%= node[:escidoc][:feature][:saxon] %>"/>
+    <pack index="11" name="Configuration and Initialization" selected="<%= node[:escidoc][:feature][:configuration] %>"/>
+    <pack index="12" name="Database Creation" selected="<%= node[:escidoc][:feature][:createDatabase] %>"/>
+    <pack index="13" name="Database Initialization" selected="<%= node[:escidoc][:feature][:initDatabase] %>"/>
+    <pack index="14" name="Roles and Users Creation" selected="<%= node[:escidoc][:feature][:createUsersAndRoles] %>"/>
+  </com.izforge.izpack.panels.TreePacksPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.14">
+    <userInput>
+      <entry key="AdminPassword" value="<%= node[:escidoc][:users][:adminUser][:username] %>"/>
+      <entry key="AdminUsername" value="<%= node[:escidoc][:users][:adminUser][:password] %>"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.15">
+    <userInput>
+      <entry key="InspectorPassword" value="<%= node[:escidoc][:users][:inspector][:username] %>"/>
+      <entry key="InspectorUsername" value="<%= node[:escidoc][:users][:inspector][:password] %>"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.16">
+    <userInput>
+      <entry key="DepositorPassword" value="<%= node[:escidoc][:users][:depositor][:username] %>"/>
+      <entry key="DepositorUsername" value="<%= node[:escidoc][:users][:depositor][:password] %>"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.17">
+    <userInput>
+      <entry key="JBossPassword" value="<%= node[:jboss][:password] %>"/>
+      <entry key="JBossUsername" value="<%= node[:jboss][:username] %>"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.18">
+    <userInput>
+      <entry key="JBossKeystore" value=""/>
+      <entry key="JBossKeystorePassword" value=""/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.InstallPanel id="EscidocInstall"/>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.19">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.20">
+    <userInput/>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.ProcessPanel id="UNKNOWN (com.izforge.izpack.panels.ProcessPanel)"/>
+  <com.izforge.izpack.panels.HTMLInfoPanel id="installInfo"/>
+  <com.izforge.izpack.panels.HTMLInfoPanel id="upgradeInfo"/>
+  <com.izforge.izpack.panels.HTMLInfoPanel id="upgradeInfoWithoutMigration"/>
+  <com.izforge.izpack.panels.FinishPanel id="CommonFinish"/>
+</AutomatedInstallation>

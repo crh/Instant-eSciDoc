@@ -1,0 +1,2 @@
+%escidoc     ALL=(escidoc) NOPASSWD:ALL
+%escidoc     ALL=(root)  NOPASSWD: /sbin/service escidoc [a-zA-Z]*

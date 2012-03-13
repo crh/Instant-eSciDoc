@@ -1,0 +1,154 @@
+#!/bin/sh
+#
+# Source LSB function library.
+[ -f /lib/lsb/init-functions ] && . /lib/lsb/init-functions
+
+JBOSS_HOME="<%= node[:escidoc][:installpath] %>/jboss"
+JBOSS_USER="<%= node[:escidoc][:osuser] %>"
+JBOSS_CONFIGURATION="default"
+JBOSS_LOG="$JBOSS_HOME/server/$JBOSS_CONFIGURATION/log"
+JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
+JAVACMD="$JAVA_HOME/bin/java"
+#JAVA_OPTS="-Xms64M -Xmx256M"
+JAVAC_JAR="$JAVA_HOME/lib/tools.jar"
+
+JBOSS_BINDIR="$JBOSS_HOME/bin"
+LOCKFILE=/var/lock/jboss
+PIDFILE=/var/run/jboss.pid
+TMPDIR=/var/cache/jboss
+
+if [ ! -d "$JBOSS_LOG" ]; then
+  mkdir $JBOSS_LOG
+  chown <%= node[:escidoc][:osuser] %>:<%= node[:escidoc][:osgroup] %> $JBOSS_LOG
+fi
+
+
+start ()
+{
+    if [ ! -f $LOCKFILE ]; then
+        id $JBOSS_USER > /dev/null 2>&1
+        if [ $? -ne 0 -o -z "$JBOSS_USER" ]; then
+            echo "User $JBOSS_USER does not exist..."
+            RETVAL=1
+            return $RETVAL
+        fi
+
+        echo "Starting jboss: "
+
+        touch $LOCKFILE
+
+        rm $JBOSS_HOME/server/$JBOSS_CONFIGURATION/log/server.log
+        su $JBOSS_USER -c "touch $JBOSS_HOME/server/$JBOSS_CONFIGURATION/log/server.log" &
+
+        export JAVA_HOME JAVACMD JAVA_OPTS JBOSS_CONFIGURATION JAVAC_JAR 
+
+        su $JBOSS_USER -c "$JBOSS_BINDIR/run.sh -b 0.0.0.0 > $JBOSS_HOME/server/$JBOSS_CONFIGURATION/log/server.log" &
+
+        sleep=0
+        RETVAL=1
+        while [ $sleep -lt 180 -a $RETVAL -eq 1 ]; do
+            sleep 10
+            sleep=`expr $sleep + 10`
+            grep -q MicroKernel $JBOSS_HOME/server/$JBOSS_CONFIGURATION/log/server.log > /dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                RETVAL=0
+            fi
+        done
+
+        if [ -f /lib/lsb/init-functions ]; then
+        [ $RETVAL -eq 0 ] && log_success_msg "jboss startup" || ( log_failure_msg "jboss startup" && rm -f $LOCKFILE )
+        echo ""
+        else
+        [ $RETVAL -eq 0 ] && echo "jboss startup succeeded" || ( echo "jboss startup failed" && rm -f $LOCKFILE )
+        fi
+    else
+        echo "lockfile for jboss already exists..."
+        RETVAL=0
+    fi
+    return $RETVAL
+}
+
+stop ()
+{
+    echo -n "Shutting down jboss: "
+
+    status > /dev/null 2>&1
+    if [ $? -eq 3 ]; then
+        if [ -f /lib/lsb/init-functions ]; then
+        log_success_msg "jboss shutdown"
+        echo ""
+        else
+        echo "jboss shutdown succeeded"
+        fi
+        return 0
+    fi
+
+    export JAVA_HOME JAVACMD JAVA_OPTS JBOSS_CONFIGURATION JAVAC_JAR 
+
+    su $JBOSS_USER -c "sh $JBOSS_BINDIR/shutdown.sh $JBOSS_SHUTDOWN_OPTIONS --" &
+
+    sleep=10
+    RETVAL=1
+    while [ $sleep -lt 180 -a $RETVAL -eq 1 ]; do
+        sleep 5
+        sleep=`expr $sleep + 10`
+        pslist=$( ps -af | grep java | grep $JBOSS_USER | awk '{print $2}' | tr '\n' ' ' | sed -e s/\ $// )
+        [ -z "$pslist" ]
+        if [ $? -eq 0 ]; then
+            RETVAL=0
+        fi
+    done
+    if [ -f /lib/lsb/init-functions ]; then
+    [ $RETVAL -eq 0 ] && ( log_success_msg "jboss shutdown" && rm -f $LOCKFILE ) || log_failure_msg "jboss shutdown"
+    echo ""
+    else
+    [ $RETVAL -eq 0 ] && ( echo "jboss shutdown succeeded" && rm -f $LOCKFILE ) || echo "jboss shutdown failed"
+    fi
+    return $RETVAL
+}
+
+status ()
+{
+    pslist=$( ps -af | grep java | grep $JBOSS_USER | awk '{print $2}' | tr '\n' ' ' | sed -e s/\ $// )
+    if [ -n "$pslist" ]; then
+        echo "jboss (pid $pslist) is running"
+        return 0
+    fi
+    if [ -f $PIDFILE ]; then
+        echo "jboss dead but pid file exists"
+        return 1
+    fi
+    if [ -f $LOCKFILE ]; then
+        echo "jboss dead but subsys locked"
+        return 2
+    fi
+    echo "jboss is stopped"
+    return 3
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        RETVAL=$?
+        ;;
+    restart|reload|force-reload)
+        stop
+        start
+        ;;
+    condrestart)
+        if [ -f $LOCKFILE ]; then
+            restart
+        fi
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+        exit 1
+esac
+
+exit $RETVAL
